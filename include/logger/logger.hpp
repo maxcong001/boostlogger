@@ -32,7 +32,7 @@
 #include <string>   // std::string
 #include <iostream> // std::cout
 #include <fstream>
-#include <sstream>  // std::ostringstream
+#include <sstream> // std::ostringstream
 #include <array>
 #include <atomic>
 #include <memory>
@@ -42,35 +42,19 @@ typedef std::basic_istream<char> tistream;
 typedef std::basic_ostringstream<char> tostringstream;
 typedef std::basic_istringstream<char> tistringstream;
 
+enum log_level
+{
+  debug_level,
+  info_level,
+  warn_level,
+  error_level,
+  critical_level
+};
+
+
 class logger_iface
 {
 public:
-  enum log_level
-  {
-    debug = 0,
-    info,
-    warn,
-    error,
-    critical
-  };
-  std::ostream &operator<<(std::ostream &strm, log_level level)
-  {
-    static const char *strings[] =
-        {
-            "debug",
-            "info",
-            "warn",
-            "error",
-            "critical"};
-
-    if (static_cast<std::size_t>(level) < sizeof(strings) / sizeof(*strings))
-      strm << strings[level];
-    else
-      strm << static_cast<int>(level);
-
-    return strm;
-  }
-
 public:
   logger_iface(void)
   {
@@ -82,13 +66,12 @@ public:
 
 public:
   virtual void init() = 0;
-  virtual void set_log_level(logger_iface::log_level level) = 0;
+  virtual void set_log_level(log_level level) = 0;
   virtual void debug_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
   virtual void info_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
   virtual void warn_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
   virtual void error_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
   virtual void critical_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-  
 };
 
 void debug(const std::string &msg, const std::string &file, std::size_t line);
@@ -97,8 +80,7 @@ void warn(const std::string &msg, const std::string &file, std::size_t line);
 void error(const std::string &msg, const std::string &file, std::size_t line);
 void critical(const std::string &msg, const std::string &file, std::size_t line);
 
-
-void set_log_level(logger_iface::log_level level);
+void set_log_level(log_level level);
 void init_logger();
 
 #define __LOGGING_ENABLED

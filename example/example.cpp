@@ -4,7 +4,7 @@
 int main()
 {
     init_logger();
-    set_log_level(logger_iface::log_level::warn);
+    set_log_level(log_level::debug_level);
 
     for (int i = 0; i < 10; i++)
     {

@@ -1,8 +1,8 @@
-#pragma once
+
 
 #include "logger/logger.hpp"
-
-std::unique_ptr<logger_iface> active_logger(new boost_logger(logger_iface::log_level::error)); //nullptr;
+#include "logger/boost_logger.hpp"
+std::unique_ptr<logger_iface> active_logger(new boost_logger(log_level::error_level)); //nullptr;
 
 void debug(const std::string &msg, const std::string &file, std::size_t line)
 {
@@ -33,7 +33,7 @@ void critical(const std::string &msg, const std::string &file, std::size_t line)
     if (active_logger)
         active_logger->critical_log(msg, file, line);
 }
-void set_log_level(logger_iface::log_level level)
+void set_log_level(log_level level)
 {
     if (active_logger)
         active_logger->set_log_level(level);
