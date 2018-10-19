@@ -1,0 +1,26 @@
+{
+    "remotePath": "/home/max/github/boost_logger",
+    "host": "135.252.134.135",
+    "username": "max",
+    "password": "savage221",
+    "port": 22,
+    "secure": false,
+    "protocol": "sftp",
+    "uploadOnSave": false,
+    "passive": false,
+    "debug": false,
+    "privateKeyPath": null,
+    "passphrase": null,
+    "ignore": [
+        "\\.vscode",
+        "\\.git",
+        "\\.DS_Store",
+        "\\lib",
+        "\\build"
+    ],
+    "generatedFiles": {
+        "uploadOnSave": false,
+        "extensionsToInclude": [],
+        "path": ""
+    }
+}
