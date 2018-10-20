@@ -44,25 +44,24 @@ typedef sinks::asynchronous_sink<sinks::text_ostream_backend, sinks::bounded_fif
 
 class boost_logger : public logger_iface
 {
-public:
-  boost_logger(log_level level = log_level::info_level);
-  ~boost_logger(void);
+  public:
+	boost_logger(log_level level = log_level::info_level);
+	~boost_logger(void);
 
-  boost_logger(const boost_logger &) = default;
-  boost_logger &operator=(const boost_logger &) = default;
+	boost_logger(const boost_logger &) = default;
+	boost_logger &operator=(const boost_logger &) = default;
 
-public:
-  void set_log_level(log_level level);
-  void debug_log(const std::string &msg, const std::string &file, std::size_t line);
-  void info_log(const std::string &msg, const std::string &file, std::size_t line);
-  void warn_log(const std::string &msg, const std::string &file, std::size_t line);
-  void error_log(const std::string &msg, const std::string &file, std::size_t line);
-  void critical_log(const std::string &msg, const std::string &file, std::size_t line);
+  public:
+	void init() override;
+	void set_log_level(log_level level) override;
+	void debug_log(const std::string &msg, const std::string &file, std::size_t line) override;
+	void info_log(const std::string &msg, const std::string &file, std::size_t line) override;
+	void warn_log(const std::string &msg, const std::string &file, std::size_t line) override;
+	void error_log(const std::string &msg, const std::string &file, std::size_t line) override;
+	void critical_log(const std::string &msg, const std::string &file, std::size_t line) override;
 
-  void init();
-
-private:
-  log_level m_level;
-  boost::shared_ptr<sink_t> _sink;
-  boost::log::sources::severity_logger_mt<log_level> lg;
+  private:
+	log_level m_level;
+	boost::shared_ptr<sink_t> _sink;
+	boost::log::sources::severity_logger_mt<log_level> lg;
 };

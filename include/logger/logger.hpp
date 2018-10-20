@@ -27,51 +27,39 @@
 
 #pragma once
 
-#include <memory>
-#include <mutex>
 #include <string>   // std::string
 #include <iostream> // std::cout
 #include <fstream>
 #include <sstream> // std::ostringstream
-#include <array>
-#include <atomic>
-#include <memory>
 
-typedef std::basic_ostream<char> tostream;
-typedef std::basic_istream<char> tistream;
 typedef std::basic_ostringstream<char> tostringstream;
-typedef std::basic_istringstream<char> tistringstream;
 
 enum log_level
 {
-  debug_level,
-  info_level,
-  warn_level,
-  error_level,
-  critical_level
+	debug_level,
+	info_level,
+	warn_level,
+	error_level,
+	critical_level
 };
-
 
 class logger_iface
 {
-public:
-public:
-  logger_iface(void)
-  {
-  }
-  virtual ~logger_iface(void) = default;
+  public:
+  public:
+	logger_iface(void) = default;
+	virtual ~logger_iface(void) = default;
+	logger_iface(const logger_iface &) = default;
+	logger_iface &operator=(const logger_iface &) = default;
 
-  logger_iface(const logger_iface &) = default;
-  logger_iface &operator=(const logger_iface &) = default;
-
-public:
-  virtual void init() = 0;
-  virtual void set_log_level(log_level level) = 0;
-  virtual void debug_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-  virtual void info_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-  virtual void warn_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-  virtual void error_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-  virtual void critical_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
+  public:
+	virtual void init() = 0;
+	virtual void set_log_level(log_level level) = 0;
+	virtual void debug_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
+	virtual void info_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
+	virtual void warn_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
+	virtual void error_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
+	virtual void critical_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
 };
 
 void debug(const std::string &msg, const std::string &file, std::size_t line);
@@ -86,13 +74,13 @@ void init_logger();
 #define __LOGGING_ENABLED
 
 #ifdef __LOGGING_ENABLED
-#define __LOG(level, msg)                          \
-                                                   \
-  {                                                \
-    tostringstream var;                            \
-    var << "[fuction:" << __func__ << "] " << msg; \
-    level(var.str(), __FILE__, __LINE__);          \
-  }
+#define __LOG(level, msg)                              \
+                                                       \
+	{                                                  \
+		tostringstream var;                            \
+		var << "[fuction:" << __func__ << "] " << msg; \
+		level(var.str(), __FILE__, __LINE__);          \
+	}
 #else
 #define __LOG(level, msg)
 #endif /* __LOGGING_ENABLED */
