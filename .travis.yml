@@ -1,0 +1,37 @@
+language: cpp
+
+# safelist
+branches:
+  only:
+  - master
+  - dev
+
+compiler:
+  - gcc
+
+cache: ccache
+
+os:
+  - linux
+
+
+services:
+
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.8
+      - g++-4.8
+      - libboost-all-dev
+
+before_install:
+
+
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install ccache; fi
+
+
+script: mkdir -p build &&cd build&& cmake ..&&make
