@@ -1,7 +1,7 @@
 {
-    "remotePath": "/home/max/github/boost_logger",
-    "host": "192.168.1.69",
-    "username": "max",
+    "remotePath": "/home/mcong/github/boostlogger",
+    "host": "135.251.166.251",
+    "username": "mcong",
     "password": "savage221",
     "port": 22,
     "secure": false,
