@@ -33,6 +33,16 @@
 #include <sstream> // std::ostringstream
 
 typedef std::basic_ostringstream<char> tostringstream;
+static const char black[] = {0x1b, '[', '1', ';', '3', '0', 'm', 0};
+static const char red[] = {0x1b, '[', '1', ';', '3', '1', 'm', 0};
+static const char yellow[] = {0x1b, '[', '1', ';', '3', '3', 'm', 0};
+static const char blue[] = {0x1b, '[', '1', ';', '3', '4', 'm', 0};
+static const char normal[] = {0x1b, '[', '0', ';', '3', '9', 'm', 0};
+templete<>
+class getLogger
+{
+	public:
+};
 
 enum log_level
 {
@@ -45,31 +55,22 @@ enum log_level
 
 class logger_iface
 {
-  public:
-  public:
+public:
 	logger_iface(void) = default;
 	virtual ~logger_iface(void) = default;
 	logger_iface(const logger_iface &) = default;
 	logger_iface &operator=(const logger_iface &) = default;
 
-  public:
+public:
 	virtual void init() = 0;
 	virtual void set_log_level(log_level level) = 0;
-	virtual void debug_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-	virtual void info_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-	virtual void warn_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-	virtual void error_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
-	virtual void critical_log(const std::string &msg, const std::string &file, std::size_t line) = 0;
+	virtual log_level get_log_level() = 0;
+	virtual void debug_log(const std::string &msg) = 0;
+	virtual void info_log(const std::string &msg) = 0;
+	virtual void warn_log(const std::string &msg) = 0;
+	virtual void error_log(const std::string &msg) = 0;
+	virtual void critical_log(const std::string &msg) = 0;
 };
-
-void debug(const std::string &msg, const std::string &file, std::size_t line);
-void info(const std::string &msg, const std::string &file, std::size_t line);
-void warn(const std::string &msg, const std::string &file, std::size_t line);
-void error(const std::string &msg, const std::string &file, std::size_t line);
-void critical(const std::string &msg, const std::string &file, std::size_t line);
-
-void set_log_level(log_level level);
-void init_logger();
 
 #define __LOGGING_ENABLED
 
@@ -77,6 +78,7 @@ void init_logger();
 #define __LOG(level, msg)                              \
                                                        \
 	{                                                  \
+		if()
 		tostringstream var;                            \
 		var << "[fuction:" << __func__ << "] " << msg; \
 		level(var.str(), __FILE__, __LINE__);          \
