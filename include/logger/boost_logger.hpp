@@ -41,26 +41,108 @@ namespace keywords = boost::log::keywords;
 namespace attrs = boost::log::attributes;
 
 typedef sinks::asynchronous_sink<sinks::text_ostream_backend, sinks::bounded_fifo_queue<1000, sinks::drop_on_overflow>> sink_t;
+static std::ostream &operator<<(std::ostream &strm, log_level level)
+{
+	static const char *strings[] =
+		{
+			"debug",
+			"info",
+			"warn",
+			"error",
+			"critical"};
 
+	if (static_cast<std::size_t>(level) < sizeof(strings) / sizeof(*strings))
+		strm << strings[level];
+	else
+		strm << static_cast<int>(level);
+
+	return strm;
+}
 class boost_logger : public logger_iface
 {
-  public:
-	boost_logger(log_level level = log_level::info_level);
-	~boost_logger(void);
+public:
+	boost_logger() : m_level(log_level::error_level)
+	{
+	}
+	~boost_logger()
+	{
+		boost::shared_ptr<logging::core> core = logging::core::get();
+		// Remove the sink from the core, so that no records are passed to it
+		core->remove_sink(_sink);
+		// Break the feeding loop
+		_sink->stop();
+		// Flush all log records that may have left buffered
+		_sink->flush();
+		_sink.reset();
+	}
 
-	boost_logger(const boost_logger &) = default;
-	boost_logger &operator=(const boost_logger &) = default;
+	void init() override
+	{
+		logging::add_common_attributes();
+		boost::shared_ptr<logging::core> core = logging::core::get();
+		boost::shared_ptr<sinks::text_ostream_backend> backend = boost::make_shared<sinks::text_ostream_backend>();
+		if (!_sink)
+		{
+			_sink.reset(new sink_t(backend));
+			core->add_sink(_sink);
+		}
 
-  public:
-	void init() override;
-	void set_log_level(log_level level) override;
-	void debug_log(const std::string &msg, const std::string &file, std::size_t line) override;
-	void info_log(const std::string &msg, const std::string &file, std::size_t line) override;
-	void warn_log(const std::string &msg, const std::string &file, std::size_t line) override;
-	void error_log(const std::string &msg, const std::string &file, std::size_t line) override;
-	void critical_log(const std::string &msg, const std::string &file, std::size_t line) override;
+		core->add_global_attribute("ThreadID", attrs::current_thread_id());
+		core->add_global_attribute("Process", attrs::current_process_name());
+		_sink->set_filter(expr::attr<log_level>("Severity") >= m_level);
+		_sink->set_formatter(
+			expr::stream
+			<< "["
+			<< expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f") << "]["
+			<< expr::attr<attrs::current_thread_id::value_type>("ThreadID") << ":"
+			<< expr::attr<unsigned int>("LineID") << "]["
+			<< expr::attr<std::string>("Process")
+			<< "][" << expr::attr<log_level>("Severity")
+			<< "] "
+			<< ":" << expr::smessage);
+		{
+			sink_t::locked_backend_ptr p = _sink->locked_backend();
+			p->add_stream(boost::shared_ptr<std::ostream>(&std::clog, boost::null_deleter()));
+		}
+	}
 
-  private:
+	void set_log_level(log_level level) override
+	{
+		m_level = level;
+
+		if (_sink)
+		{
+			_sink->set_filter(expr::attr<log_level>("Severity") >= m_level);
+		}
+	}
+
+	log_level get_log_level() override
+	{
+		return m_level;
+	}
+
+	void debug_log(const std::string &msg) override
+	{
+		BOOST_LOG_SEV(lg, debug_level) << msg << std::endl;
+	}
+	void info_log(const std::string &msg) override
+	{
+		BOOST_LOG_SEV(lg, info_level) << blue << msg << normal << std::endl;
+	}
+	void warn_log(const std::string &msg) override
+	{
+		BOOST_LOG_SEV(lg, warn_level) << yellow << msg << normal << std::endl;
+	}
+	void error_log(const std::string &msg) override
+	{
+		BOOST_LOG_SEV(lg, error_level) << red << msg << normal << std::endl;
+	}
+	void critical_log(const std::string &msg) override
+	{
+		BOOST_LOG_SEV(lg, critical_level) << red << msg << normal << std::endl;
+	}
+
+private:
 	log_level m_level;
 	boost::shared_ptr<sink_t> _sink;
 	boost::log::sources::severity_logger_mt<log_level> lg;
