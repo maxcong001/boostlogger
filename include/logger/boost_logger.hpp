@@ -41,10 +41,29 @@ namespace keywords = boost::log::keywords;
 namespace attrs = boost::log::attributes;
 
 typedef sinks::asynchronous_sink<sinks::text_ostream_backend, sinks::bounded_fifo_queue<1000, sinks::drop_on_overflow>> sink_t;
+static std::ostream &operator<<(std::ostream &strm, log_level level)
+{
+	static const char *strings[] =
+		{
+			"debug",
+			"info",
+			"warn",
+			"error",
+			"critical"};
 
+	if (static_cast<std::size_t>(level) < sizeof(strings) / sizeof(*strings))
+		strm << strings[level];
+	else
+		strm << static_cast<int>(level);
+
+	return strm;
+}
 class boost_logger : public logger_iface
 {
 public:
+	boost_logger() : m_level(log_level::error_level)
+	{
+	}
 	~boost_logger()
 	{
 		boost::shared_ptr<logging::core> core = logging::core::get();
