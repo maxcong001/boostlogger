@@ -13,10 +13,14 @@ just init log and set log level
 
 int main()
 {
-	init_logger();
-	set_log_level(log_level::error_level);
-	__LOG(error, "hello logger!"
-					 << "this is error log");
+	std::unique_ptr<boost_logger> boostloggerUptr(new boost_logger());
+	INIT_LOGGER(boostloggerUptr);
+	SET_LOG_LEVEL(debug);
+	if (CHECK_LOG_LEVEL(critical))
+	{
+		__LOG(critical, "hello logger!"
+								<< "this is critical log");
+	}
 }
 ```
 
