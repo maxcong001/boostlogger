@@ -88,13 +88,11 @@ static std::unique_ptr<logger_iface> active_logger;
 #define __LOG(level, msg)                                                      \
                                                                                \
 	{                                                                          \
-		if (!active_logger)                                                    \
-		{                                                                      \
-		}                                                                      \
 		tostringstream var;                                                    \
 		var << "[" << __FILE__ << ":" << __LINE__ << ":" << __func__ << "] \n" \
 			<< msg;                                                            \
-		active_logger->level##_log(var.str());                                 \
+		if (active_logger)                                                     \
+			active_logger->level##_log(var.str());                             \
 	}
 #else
 #define __LOG(level, msg)
