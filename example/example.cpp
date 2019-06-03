@@ -3,7 +3,7 @@
 
 int main()
 {
-	
+
 	std::unique_ptr<boost_logger> boostloggerUptr(new boost_logger());
 	INIT_LOGGER(boostloggerUptr);
 	SET_LOG_LEVEL(debug);
@@ -18,7 +18,7 @@ int main()
 	__LOG(debug, "hello logger!"
 					 << "this is debug log");
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		if (CHECK_LOG_LEVEL(critical))
 		{
