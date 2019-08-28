@@ -1,11 +1,12 @@
 
 #include "logger/boost_logger.hpp"
-
+#include <chrono>
+#include <thread>
 int main()
 {
-	
-	std::unique_ptr<boost_logger> boostloggerUptr(new boost_logger());
-	INIT_LOGGER(boostloggerUptr);
+
+	//std::unique_ptr<boost_logger> boostloggerUptr(new boost_logger());
+	INIT_LOGGER(new boost_logger());
 	SET_LOG_LEVEL(debug);
 	__LOG(critical, "hello logger!"
 						<< "this is critical log");
@@ -18,7 +19,7 @@ int main()
 	__LOG(debug, "hello logger!"
 					 << "this is debug log");
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		if (CHECK_LOG_LEVEL(critical))
 		{
@@ -46,4 +47,5 @@ int main()
 							 << "this is debug log");
 		}
 	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
