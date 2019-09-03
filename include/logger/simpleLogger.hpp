@@ -96,8 +96,7 @@ public:
 	}
 	~boost_logger()
 	{
-		
-	}
+		}
 	void init() override
 	{
 		logging::add_common_attributes();
