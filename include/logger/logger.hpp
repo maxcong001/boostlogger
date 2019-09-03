@@ -39,7 +39,7 @@ static const char red[] = {0x1b, '[', '1', ';', '3', '1', 'm', 0};
 static const char yellow[] = {0x1b, '[', '1', ';', '3', '3', 'm', 0};
 static const char blue[] = {0x1b, '[', '1', ';', '3', '4', 'm', 0};
 static const char normal[] = {0x1b, '[', '0', ';', '3', '9', 'm', 0};
-#define ACTIVE_LOGGER_INSTANCE (*activeLogger<logger_iface>::getLoggerAddr())
+#define ACTIVE_LOGGER_INSTANCE (*activeLogger::getLoggerAddr())
 #define INIT_LOGGER(loggerImpUptr)              \
                                                 \
 	{                                           \
@@ -80,7 +80,7 @@ public:
 	virtual void error_log(const std::string &msg) = 0;
 	virtual void critical_log(const std::string &msg) = 0;
 };
-template <typename logtype>
+
 class activeLogger
 {
 public:

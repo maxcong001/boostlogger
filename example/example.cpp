@@ -1,5 +1,6 @@
 
 #include "logger/boost_logger.hpp"
+#include "test.hpp"
 #include <chrono>
 #include <thread>
 int main()
@@ -9,43 +10,16 @@ int main()
 	INIT_LOGGER(new boost_logger());
 	SET_LOG_LEVEL(debug);
 	__LOG(critical, "hello logger!"
-						<< "this is critical log");
+						<< "this is critical log" << (void *)ACTIVE_LOGGER_INSTANCE);
 	__LOG(error, "hello logger!"
-					 << "this is error log");
+					 << "this is error log" << (void *)ACTIVE_LOGGER_INSTANCE);
 	__LOG(warn, "hello logger!"
-					<< "this is warn log");
+					<< "this is warn log" << (void *)ACTIVE_LOGGER_INSTANCE);
 	__LOG(info, "hello logger!"
-					<< "this is info log");
+					<< "this is info log" << (void *)ACTIVE_LOGGER_INSTANCE);
 	__LOG(debug, "hello logger!"
-					 << "this is debug log");
+					 << "this is debug log" << (void *)ACTIVE_LOGGER_INSTANCE);
 
-	for (int i = 0; i < 100; i++)
-	{
-		if (CHECK_LOG_LEVEL(critical))
-		{
-			__LOG(critical, "hello logger!"
-								<< "this is critical log");
-		}
-		if (CHECK_LOG_LEVEL(error))
-		{
-			__LOG(error, "hello logger!"
-							 << "this is error log");
-		}
-		if (CHECK_LOG_LEVEL(warn))
-		{
-			__LOG(warn, "hello logger!"
-							<< "this is warn log");
-		}
-		if (CHECK_LOG_LEVEL(info))
-		{
-			__LOG(info, "hello logger!"
-							<< "this is info log");
-		}
-		if (CHECK_LOG_LEVEL(debug))
-		{
-			__LOG(debug, "hello logger!"
-							 << "this is debug log");
-		}
-	}
+	test();
 	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
