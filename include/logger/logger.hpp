@@ -40,8 +40,8 @@ static const char yellow[] = {0x1b, '[', '1', ';', '3', '3', 'm', 0};
 static const char blue[] = {0x1b, '[', '1', ';', '3', '4', 'm', 0};
 static const char normal[] = {0x1b, '[', '0', ';', '3', '9', 'm', 0};
 #define ACTIVE_LOGGER_INSTANCE (*activeLogger::getLoggerAddr())
-// note: this will replace the logger instace. If this is not the first time to set the logger instance. 
-// Please make sure to delete/free the old instance. 
+// note: this will replace the logger instace. If this is not the first time to set the logger instance.
+// Please make sure to delete/free the old instance.
 #define INIT_LOGGER(loggerImpPtr)              \
 	{                                          \
 		ACTIVE_LOGGER_INSTANCE = loggerImpPtr; \
@@ -53,10 +53,13 @@ static const char normal[] = {0x1b, '[', '0', ';', '3', '9', 'm', 0};
 		if (ACTIVE_LOGGER_INSTANCE)                                               \
 			(ACTIVE_LOGGER_INSTANCE->set_log_level(log_level::logLevel##_level)); \
 	}
-#define DESTROY_LOG                        \
-	{                                      \
-		if (ACTIVE_LOGGER_INSTANCE)        \
-			delete ACTIVE_LOGGER_INSTANCE; \
+#define DESTROY_LOGGER                      \
+	{                                       \
+		if (ACTIVE_LOGGER_INSTANCE)         \
+		{                                   \
+			ACTIVE_LOGGER_INSTANCE->stop(); \
+			delete ACTIVE_LOGGER_INSTANCE;  \
+		}                                   \
 	}
 
 enum log_level
@@ -78,6 +81,7 @@ public:
 
 public:
 	virtual void init() = 0;
+	virtual void stop() = 0;
 	virtual void set_log_level(log_level level) = 0;
 	virtual log_level get_log_level() = 0;
 	virtual void debug_log(const std::string &msg) = 0;
