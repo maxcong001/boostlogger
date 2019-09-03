@@ -70,12 +70,7 @@ public:
 	}
 	~boost_logger()
 	{
-		_sink->stop();
-		// Flush all log records that may have left buffered
-		_sink->flush();
-		core->remove_sink(_sink);
-		_sink.reset();
-	}
+		}
 
 	void init() override
 	{
@@ -104,7 +99,13 @@ public:
 			p->add_stream(boost::shared_ptr<std::ostream>(&std::clog, boost::null_deleter()));
 		}
 	}
-
+	void stop() override
+	{
+		warn_log("boost logger stopping");
+		_sink->flush();
+		_sink->stop();
+		core->remove_sink(_sink);
+	}
 	void set_log_level(log_level level) override
 	{
 		m_level = level;
