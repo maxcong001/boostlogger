@@ -40,17 +40,23 @@ static const char yellow[] = {0x1b, '[', '1', ';', '3', '3', 'm', 0};
 static const char blue[] = {0x1b, '[', '1', ';', '3', '4', 'm', 0};
 static const char normal[] = {0x1b, '[', '0', ';', '3', '9', 'm', 0};
 #define ACTIVE_LOGGER_INSTANCE (*activeLogger::getLoggerAddr())
-#define INIT_LOGGER(loggerImpUptr)              \
-                                                \
-	{                                           \
-		ACTIVE_LOGGER_INSTANCE = loggerImpUptr; \
-		ACTIVE_LOGGER_INSTANCE->init();         \
+// note: this will replace the logger instace. If this is not the first time to set the logger instance. 
+// Please make sure to delete/free the old instance. 
+#define INIT_LOGGER(loggerImpPtr)              \
+	{                                          \
+		ACTIVE_LOGGER_INSTANCE = loggerImpPtr; \
+		ACTIVE_LOGGER_INSTANCE->init();        \
 	}
 #define CHECK_LOG_LEVEL(logLevel) (ACTIVE_LOGGER_INSTANCE ? ((ACTIVE_LOGGER_INSTANCE->get_log_level() <= log_level::logLevel##_level) ? true : false) : false)
 #define SET_LOG_LEVEL(logLevel)                                                   \
 	{                                                                             \
 		if (ACTIVE_LOGGER_INSTANCE)                                               \
 			(ACTIVE_LOGGER_INSTANCE->set_log_level(log_level::logLevel##_level)); \
+	}
+#define DESTROY_LOG                        \
+	{                                      \
+		if (ACTIVE_LOGGER_INSTANCE)        \
+			delete ACTIVE_LOGGER_INSTANCE; \
 	}
 
 enum log_level
